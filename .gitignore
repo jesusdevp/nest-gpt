@@ -4,6 +4,10 @@
 
 .env
 
+# Generated content
+/generated/*
+!/generated/.gitkeep
+
 # Logs
 logs
 *.log
