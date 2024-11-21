@@ -1,6 +1,6 @@
 import { Body, Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { GptService } from './gpt.service';
-import { OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import { ImageGenerationDto, ImageVariationDto, OrthographyDto, ProsConsDiscusserDto } from './dtos';
 import { Response } from 'express';
 import { TranslateDto } from './dtos/translate.dto';
 import { TextToAudioDto } from './dtos/text-to-audio.dto';
@@ -62,7 +62,7 @@ export class GptController {
   ) {
     const filePath = await this.gptService.trextToAudio(translateTextDto)
 
-    res.setHeader('Content-Tyoe', 'audio/mp3')
+    res.setHeader('Content-Type', 'audio/mp3')
     res.status(HttpStatus.OK)
     res.sendFile(filePath)
   }
@@ -74,7 +74,7 @@ export class GptController {
   ) {
     const filePath = await this.gptService.textToAudioGetter(fileId)
 
-    res.setHeader('Content-Tyoe', 'audio/mp3')
+    res.setHeader('Content-Type', 'audio/mp3')
     res.status(HttpStatus.OK)
     res.sendFile(filePath)
 
@@ -107,6 +107,31 @@ export class GptController {
   ) {
 
     return this.gptService.audioToText(file, audioToTextDto)
+  }
+
+  @Post('image-generation')
+  async imageGeneration(
+    @Body() imageGenerationDto: ImageGenerationDto 
+  ) {
+    return await this.gptService.imageGeneration( imageGenerationDto )
+  }
+
+  @Get('image-generation/:filename')
+  async getGeneratedImage(
+    @Res() res: Response,
+    @Param('filename') filename: string
+  ) {
+    const filePath = this.gptService.getGeneratedImage( filename )
+
+    res.status(HttpStatus.OK)
+    res.sendFile(filePath)
+  }
+
+  @Post('image-variation')
+  async imageVariation(
+    @Body() imageVariationDto: ImageVariationDto
+  ) {
+    return await this.gptService.generateImageVariation( imageVariationDto )
   }
 
 }
