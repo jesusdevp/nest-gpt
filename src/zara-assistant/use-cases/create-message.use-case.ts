@@ -11,11 +11,17 @@ export const createMessageUseCase = async ( openai: OpenAI, options: Options ) =
     
     const { threadId, question } = options;
 
-    const message = await openai.beta.threads.messages.create( threadId, {
-        role: 'user',
-        content: question,
-    });
+    try {
 
-    return message;
+        const message = await openai.beta.threads.messages.create( threadId, {
+            role: 'user',
+            content: question,
+        });
+    
+        return message;
+    } catch (error) {
+        console.log('Error create at message', error);
+        throw error;
+    }
 
 }

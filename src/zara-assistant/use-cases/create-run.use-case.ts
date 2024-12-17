@@ -2,17 +2,23 @@ import OpenAI from "openai";
 
 interface Options {
     threadId : string;
-    assistanId?: string;
+    assistantId?: string;
 }
 
 export const createRunUseCase = async ( openai: OpenAI, options: Options ) =>{
 
-    const { threadId, assistanId = 'asst_6B3NYSWN6iZM4qeXjixh7yiL' } = options;
+    const { threadId, assistantId = 'asst_6B3NYSWN6iZM4qeXjixh7yiL' } = options;
 
-    const run = await openai.beta.threads.runs.create( threadId, {
-        assistant_id: assistanId
-    });
+    try {
+        const run = await openai.beta.threads.runs.create(threadId, {
+            assistant_id: assistantId,
+            
+        });
 
-    return run;
+        return run;
+    } catch (error) {
+        console.error('Error while creating run:', error);
+        throw error;
+    }
 
 }
